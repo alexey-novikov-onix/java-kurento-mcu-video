@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta charset="utf-8">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<script src="./kurento.js"></script>
+	<script src="./script.js"></script>
+	<style>
+	</style>
+	<title>Kurento MCU</title>
+</head>
+<body>
+	<div>
+		<label for="username">Username: </label>
+		<input type="text" value="" id="username">
+		<button id="login">Login</button>
+	</div>
+	<br>
+	<div id="controls">
+		<button id="join">Join</button>
+		<button id="leave">Leave</button>
+	</div>
+	<br>
+	<div id="local" hidden>
+		<p>Local: <span id="local-username"></span></p>
+		<video id="local-video" autoplay="autoplay" controls="controls"></video>
+	</div>
+	<br>
+	<div id="remote" hidden>
+		<div>Remote:<ul id="users"></ul></div>
+		<video id="remote-video" autoplay="autoplay" controls="controls"></video>
+	</div>
+</body>
+</html>

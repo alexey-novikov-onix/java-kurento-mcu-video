@@ -1,0 +1,13 @@
+package com.onix.kurento.enums;
+
+public enum OutputMessageType {
+
+    WEBRTC_ROOM_USERS,
+    WEBRTC_ROOM_USER_ADDED,
+    WEBRTC_ROOM_USER_LEFT,
+    WEBRTC_USER_ANSWER,
+    WEBRTC_MIXER_ANSWER,
+    WEBRTC_USER_ICE_CANDIDATE,
+    WEBRTC_MIXER_ICE_CANDIDATE
+
+}
