@@ -2,6 +2,7 @@ package com.onix.kurento.controller;
 
 import com.onix.kurento.model.UserPrincipal;
 import com.onix.kurento.model.message.input.IceCandidateInputMessage;
+import com.onix.kurento.model.message.input.JoinInputMessage;
 import com.onix.kurento.model.message.input.OfferInputMessage;
 import com.onix.kurento.service.WebRtcService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public final class CallController {
     private final WebRtcService webRtcService;
 
     @MessageMapping("/user/join")
-    void userJoin(final UserPrincipal principal) {
-        log.info("INCOMING JOIN, user {}", principal.getId());
-        this.webRtcService.userJoin(principal.getId());
+    void userJoin(final @Payload JoinInputMessage message, final UserPrincipal principal) {
+        log.info("INCOMING JOIN {}, user {}", message, principal.getId());
+        this.webRtcService.userJoin(principal.getId(), message.getRoomId());
     }
 
     @MessageMapping("/user/offer")

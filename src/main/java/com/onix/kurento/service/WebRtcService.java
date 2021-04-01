@@ -13,32 +13,30 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class WebRtcService {
 
-    private static final int ROOM_ID = 1;
-
     private final UserService userService;
     private final RoomUserService roomUserService;
     private final KurentoRoomService kurentoRoomService;
     private final StompMessagingService stompMessagingService;
 
-    public void userJoin(final int userId) {
+    public void userJoin(final int userId, final int roomId) {
         final Optional<User> userOptional = this.userService.findById(userId);
 
         if (userOptional.isPresent()) {
             final User user = userOptional.get();
 
-            final List<User> roomUsers = this.roomUserService.findAll();
+            final List<User> roomUsers = this.roomUserService.findUsersByRoomId(roomId);
 
-            final Optional<User> roomUserOptional = this.roomUserService.findById(userId);
+            final Optional<User> roomUserOptional = this.roomUserService.findUserById(userId);
 
             if (roomUserOptional.isPresent()) {
                 this.kurentoRoomService.removeUserObjects(userId);
                 this.kurentoRoomService.removeMixerObjects(userId);
             } else {
-                this.roomUserService.add(user);
+                this.roomUserService.add(user, roomId);
             }
 
             this.kurentoRoomService.initializeEndpoints(
-                    ROOM_ID,
+                    roomId,
                     userId,
                     userEvent -> {
                         final IceCandidate iceCandidate = userEvent.getCandidate();
@@ -70,7 +68,7 @@ public class WebRtcService {
     }
 
     public void userOffer(final int userId, final String sdpOffer) {
-        final Optional<User> roomUserOptional = this.roomUserService.findById(userId);
+        final Optional<User> roomUserOptional = this.roomUserService.findUserById(userId);
 
         if (roomUserOptional.isPresent()) {
             final String sdpAnswer = this.kurentoRoomService.processUserOffer(userId, sdpOffer);
@@ -80,7 +78,7 @@ public class WebRtcService {
     }
 
     public void mixerOffer(final int userId, final String sdpOffer) {
-        final Optional<User> roomUserOptional = this.roomUserService.findById(userId);
+        final Optional<User> roomUserOptional = this.roomUserService.findUserById(userId);
 
         if (roomUserOptional.isPresent()) {
             final String sdpAnswer = this.kurentoRoomService.processMixerOffer(userId, sdpOffer);
@@ -90,21 +88,24 @@ public class WebRtcService {
     }
 
     public void userLeave(final int userId) {
-        final Optional<User> roomUserOptional = this.roomUserService.findById(userId);
+        final Optional<User> roomUserOptional = this.roomUserService.findUserById(userId);
 
         if (roomUserOptional.isPresent()) {
             final User user = roomUserOptional.get();
-            this.roomUserService.delete(userId);
 
-            final List<User> roomUsers = this.roomUserService.findAll();
+            final int roomId = this.roomUserService.findRoomIdByUserId(userId);
+
+            final List<User> roomUsers = this.roomUserService.findUsersByRoomId(roomId);
             roomUsers.forEach(roomUser -> this.stompMessagingService.sendToUser(
                     roomUser.getId(),
                     new RoomUserLeftOutputMessage(user)
             ));
 
             if (roomUsers.isEmpty()) {
-                this.kurentoRoomService.removeRoomObjects(ROOM_ID);
+                this.kurentoRoomService.removeRoomObjects(roomId);
             }
+
+            this.roomUserService.delete(userId);
 
             this.kurentoRoomService.removeUserObjects(userId);
             this.kurentoRoomService.removeMixerObjects(userId);

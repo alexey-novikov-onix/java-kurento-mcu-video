@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+	<script type="text/javascript" src="https://api.callstats.io/static/callstats.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<script type="text/javascript" th:src="@{/kurento.js}"></script>
+	<script type="text/javascript" th:src="@{/callstats-kurento.min.js}"></script>
+	<script type="text/javascript" th:src="@{/script.js}"></script>
+	<script type="text/javascript">
+		/*<![CDATA[*/
+		let callStats = {
+			appId: /*[[${appId}]]*/ '',
+			appSecret: /*[[${appSecret}]]*/ ''
+		};
+		/*]]>*/
+	</script>
+	<title>Kurento MCU</title>
+</head>
+<body>
+	<div>
+		<label for="username">Username: </label>
+		<input type="text" value="" id="username">
+		<button id="login">Login</button>
+	</div>
+	<br>
+	<div>
+		<label for="room">Room: </label>
+		<select id="room">
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="10">10</option>
+		</select>
+		<button id="join">Join</button>
+	</div>
+	<br>
+	<div id="controls">
+		<button id="leave">Leave</button>
+	</div>
+	<br>
+	<div id="local" hidden>
+		<p>Local: <span id="local-username"></span></p>
+		<video id="local-video" autoplay="autoplay" controls="controls"></video>
+	</div>
+	<br>
+	<div id="remote" hidden>
+		<div>Remote:<ul id="users"></ul></div>
+		<video id="remote-video" autoplay="autoplay" controls="controls"></video>
+	</div>
+</body>
+</html>

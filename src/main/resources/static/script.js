@@ -22,12 +22,16 @@ const mediaConstraints = {
     video: true
 };
 document.addEventListener("DOMContentLoaded", function() {
+    let cskApplication;
+    let cskConference;
+
     let user;
     let stompClient;
     let localVideo = document.getElementById("local-video");
     let remoteVideo = document.getElementById("remote-video");
     let localPeer;
     let remotePeer;
+
     document.getElementById("login").onclick = function () {
         fetch(HTTP + "/login", {
             method: "POST",
@@ -39,6 +43,13 @@ document.addEventListener("DOMContentLoaded", function() {
             return response.json();
         }).then(function(data) {
             user = data;
+
+            cskApplication = callstatskurento(
+                callStats.appId,
+                callStats.appSecret,
+                user.id
+            );
+
             stompClient = Stomp.over(new WebSocket(WS + "/stomp"));
             stompClient.connect({"user-id": user.id}, function () {
                 stompClient.subscribe('/topic/' + user.id, function (message) {
@@ -48,7 +59,11 @@ document.addEventListener("DOMContentLoaded", function() {
         })
     };
     document.getElementById("join").onclick = function () {
-        sendMessage({userId: user.id}, Destinations.USER_JOIN);
+        let roomId = document.getElementById("room").value;
+
+        cskConference = cskApplication.createConference(roomId);
+
+        sendMessage({roomId: roomId}, Destinations.USER_JOIN);
     };
     document.getElementById("leave").onclick = function () {
         localPeer.dispose();
@@ -105,6 +120,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }, function (error) {
                 if (error) return console.error(error);
+
+                cskConference.handle(localPeer, "local-peer-" + user.id);
+
                 document.getElementById("local-username").innerText = user.name;
                 document.getElementById("local").hidden = false;
                  this.generateOffer(function (error, offerSdp) {
@@ -121,6 +139,9 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             function (error) {
                 if (error) return console.error(error);
+
+                cskConference.handle(remotePeer, "remote-peer-" + user.id);
+
                 document.getElementById("remote").hidden = false;
                 this.generateOffer(function (error, offerSdp) {
                     if (error) return console.error(error)
