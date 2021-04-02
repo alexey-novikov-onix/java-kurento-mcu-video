@@ -96,10 +96,12 @@ public class WebRtcService {
             final int roomId = this.roomUserService.findRoomIdByUserId(userId);
 
             final List<User> roomUsers = this.roomUserService.findUsersByRoomId(roomId);
-            roomUsers.forEach(roomUser -> this.stompMessagingService.sendToUser(
-                    roomUser.getId(),
-                    new RoomUserLeftOutputMessage(user)
-            ));
+            roomUsers.stream()
+                    .filter(u -> u.getId() != userId)
+                    .forEach(roomUser -> this.stompMessagingService.sendToUser(
+                        roomUser.getId(),
+                        new RoomUserLeftOutputMessage(user)
+                ));
 
             if (roomUsers.isEmpty()) {
                 this.kurentoRoomService.removeRoomObjects(roomId);
