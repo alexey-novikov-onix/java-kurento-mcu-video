@@ -1,5 +1,5 @@
-const HTTP = "http://localhost:8080";
-const WS = "ws://localhost:8080";
+const HTTP = "http://" + window.location.hostname + ":8080";
+const WS = "ws://" + window.location.hostname + ":8080";
 const ServerMessages = {
     WEBRTC_ROOM_USERS: "WEBRTC_ROOM_USERS",
     WEBRTC_ROOM_USER_ADDED: "WEBRTC_ROOM_USER_ADDED",
