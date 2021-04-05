@@ -27,13 +27,13 @@ public final class CallController {
 
     @MessageMapping("/user/offer")
     void userOffer(final @Payload OfferInputMessage message, final UserPrincipal principal) {
-        log.info("INCOMING OFFER {}, user {}", message, principal.getId());
+        log.info("INCOMING USER OFFER {}, user {}", message, principal.getId());
         this.webRtcService.userOffer(principal.getId(), message.getSdp());
     }
 
     @MessageMapping("/mixer/offer")
     void mixerOffer(final @Payload OfferInputMessage message, final UserPrincipal principal) {
-        log.info("INCOMING OFFER {}, user {}", message, principal.getId());
+        log.info("INCOMING MIXER OFFER {}, user {}", message, principal.getId());
         this.webRtcService.mixerOffer(principal.getId(), message.getSdp());
     }
 

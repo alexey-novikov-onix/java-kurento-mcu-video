@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -95,19 +96,21 @@ public class WebRtcService {
 
             final int roomId = this.roomUserService.findRoomIdByUserId(userId);
 
-            final List<User> roomUsers = this.roomUserService.findUsersByRoomId(roomId);
-            roomUsers.stream()
+            final List<User> roomUsers = this.roomUserService.findUsersByRoomId(roomId)
+                    .stream()
                     .filter(u -> u.getId() != userId)
-                    .forEach(roomUser -> this.stompMessagingService.sendToUser(
-                        roomUser.getId(),
-                        new RoomUserLeftOutputMessage(user)
-                ));
+                    .collect(Collectors.toList());
+
+            roomUsers.forEach(roomUser -> this.stompMessagingService.sendToUser(
+                    roomUser.getId(),
+                    new RoomUserLeftOutputMessage(user)
+            ));
+
+            this.roomUserService.delete(userId);
 
             if (roomUsers.isEmpty()) {
                 this.kurentoRoomService.removeRoomObjects(roomId);
             }
-
-            this.roomUserService.delete(userId);
 
             this.kurentoRoomService.removeUserObjects(userId);
             this.kurentoRoomService.removeMixerObjects(userId);

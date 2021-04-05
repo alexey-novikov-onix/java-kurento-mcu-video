@@ -6,6 +6,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class JoinInputMessage {
 
     int roomId;
