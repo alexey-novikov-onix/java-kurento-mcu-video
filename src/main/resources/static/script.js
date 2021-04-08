@@ -1,5 +1,3 @@
-const HTTP = "http://" + window.location.hostname + ":8080";
-const WS = "ws://" + window.location.hostname + ":8080";
 const ServerMessages = {
     WEBRTC_ROOM_USERS: "WEBRTC_ROOM_USERS",
     WEBRTC_ROOM_USER_ADDED: "WEBRTC_ROOM_USER_ADDED",
@@ -32,8 +30,12 @@ document.addEventListener("DOMContentLoaded", function() {
     let localPeer;
     let remotePeer;
 
+    let ws = (location.protocol === "https:" ? "wss://" : "ws://")
+        + location.hostname
+        + (location.port === "" ? "" : ":" + location.port);
+
     document.getElementById("login").onclick = function () {
-        fetch(HTTP + "/login", {
+        fetch(location.href + "login", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -50,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 user.id
             );
 
-            stompClient = Stomp.over(new WebSocket(WS + "/stomp"));
+            stompClient = Stomp.over(new WebSocket(ws + "/stomp"));
             stompClient.connect({"user-id": user.id}, function () {
                 stompClient.subscribe('/topic/' + user.id, function (message) {
                     handleMessage(JSON.parse(message.body));
