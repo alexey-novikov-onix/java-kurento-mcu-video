@@ -8,12 +8,10 @@
 	<script type="text/javascript" th:src="@{/callstats-kurento.min.js}"></script>
 	<script type="text/javascript" th:src="@{/script.js}"></script>
 	<script type="text/javascript">
-		/*<![CDATA[*/
 		let callStats = {
-			appId: /*[[${appId}]]*/ '',
-			appSecret: /*[[${appSecret}]]*/ ''
+			appId: [[${appId}]],
+			appSecret: "[[${appSecret}]]"
 		};
-		/*]]>*/
 	</script>
 	<title>Kurento MCU</title>
 </head>
