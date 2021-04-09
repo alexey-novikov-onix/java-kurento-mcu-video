@@ -45,8 +45,8 @@ public class KurentoRoomService {
         final HubPort mixerHubPort = new HubPort.Builder(this.getComposite(roomId)).build();
         this.mixerHubPorts.put(userId, mixerHubPort);
 
-        this.getHubPort(roomId).connect(mixerEndpoint, MediaType.VIDEO);
-        outgoingEndpoint.connect(mixerHubPort, MediaType.VIDEO);
+        this.getHubPort(roomId).connect(mixerEndpoint, MediaType.AUDIO);
+        outgoingEndpoint.connect(mixerHubPort, MediaType.AUDIO);
     }
 
     public String processUserOffer(final int userId, final String sdpOffer) {

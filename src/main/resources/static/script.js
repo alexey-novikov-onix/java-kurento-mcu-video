@@ -17,7 +17,7 @@ const Destinations = {
 };
 const mediaConstraints = {
     audio: true,
-    video: true
+    video: false
 };
 let isCallStatsEnabled = false;
 document.addEventListener("DOMContentLoaded", function() {
@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let user;
     let stompClient;
-    let localVideo = document.getElementById("local-video");
-    let remoteVideo = document.getElementById("remote-video");
+    let localAudio = document.getElementById("local-audio");
+    let remoteAudio = document.getElementById("remote-audio");
     let localPeer;
     let remotePeer;
 
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
             appendUser(data.users[index]);
         }
         localPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly({
-                localVideo: localVideo,
+                localVideo: localAudio,
                 mediaConstraints: mediaConstraints,
                 onicecandidate: function (candidate) {
                     sendIceCandidate(candidate, Destinations.USER_ICE_CANDIDATE);
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function() {
                  });
             });
         remotePeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly({
-                remoteVideo: remoteVideo,
+                remoteVideo: remoteAudio,
                 mediaConstraints: mediaConstraints,
                 onicecandidate: function (candidate) {
                     sendIceCandidate(candidate, Destinations.MIXER_ICE_CANDIDATE);
