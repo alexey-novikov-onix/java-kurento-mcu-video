@@ -20,7 +20,11 @@ const mediaConstraints = {
     video: true
 };
 document.addEventListener("DOMContentLoaded", function() {
-    let cskApplication;
+    let cskApplication = callstatskurento(
+         callStats.appId,
+         callStats.appSecret,
+         "Alexey Novikov"
+    );
     let cskConference;
 
     let user;
@@ -45,12 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
             return response.json();
         }).then(function(data) {
             user = data;
-
-            cskApplication = callstatskurento(
-                callStats.appId,
-                callStats.appSecret,
-                user.id
-            );
 
             stompClient = Stomp.over(new WebSocket(ws + "/stomp"));
             stompClient.connect({"user-id": user.id}, function () {
