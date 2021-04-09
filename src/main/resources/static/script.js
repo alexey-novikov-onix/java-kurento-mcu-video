@@ -19,13 +19,16 @@ const mediaConstraints = {
     audio: true,
     video: true
 };
+let isCallStatsEnabled = false;
 document.addEventListener("DOMContentLoaded", function() {
-    let cskApplication = callstatskurento(
-         callStats.appId,
-         callStats.appSecret,
-         "Alexey Novikov"
-    );
-    let cskConference;
+    if (isCallStatsEnabled) {
+        let cskApplication = callstatskurento(
+             callStats.appId,
+             callStats.appSecret,
+             "Alexey Novikov"
+        );
+        let cskConference;
+    }
 
     let user;
     let stompClient;
@@ -61,7 +64,9 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("join").onclick = function () {
         let roomId = document.getElementById("room").value;
 
-        cskConference = cskApplication.createConference(roomId);
+        if (isCallStatsEnabled) {
+            cskConference = cskApplication.createConference(roomId);
+        }
 
         sendMessage({roomId: roomId}, Destinations.USER_JOIN);
     };
@@ -121,7 +126,9 @@ document.addEventListener("DOMContentLoaded", function() {
             }, function (error) {
                 if (error) return console.error(error);
 
-                cskConference.handle(localPeer, "local-peer-" + user.id);
+                if (isCallStatsEnabled) {
+                    cskConference.handle(localPeer, "local-peer-" + user.id);
+                }
 
                 document.getElementById("local-username").innerText = user.name;
                 document.getElementById("local").hidden = false;
@@ -140,7 +147,9 @@ document.addEventListener("DOMContentLoaded", function() {
             function (error) {
                 if (error) return console.error(error);
 
-                cskConference.handle(remotePeer, "remote-peer-" + user.id);
+                if (isCallStatsEnabled) {
+                    cskConference.handle(remotePeer, "remote-peer-" + user.id);
+                }
 
                 document.getElementById("remote").hidden = false;
                 this.generateOffer(function (error, offerSdp) {
